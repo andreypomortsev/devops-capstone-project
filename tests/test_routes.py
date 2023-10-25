@@ -135,9 +135,9 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
     
-    def test_account_not_found(self):
+    def test_get_account_not_found(self):
         """It should return a 404 response when the account is not found"""
-        non_existent_account_id = 999  # Assuming this ID doesn't exist
+        non_existent_account_id = 0
         response = self.client.get(
             f"{BASE_URL}/{non_existent_account_id}", 
             content_type="application/json"
