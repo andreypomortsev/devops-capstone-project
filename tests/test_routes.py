@@ -121,25 +121,27 @@ class TestAccountService(TestCase):
             json=account.serialize(),
             content_type="test/html"
         )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        self.assertEqual(
+            response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        )
 
     # ADD YOUR TEST CASES HERE ...
     def test_read_an_account(self):
         """It should return a single account"""
         account = self._create_accounts(1)[0]
         response = self.client.get(
-            f"{BASE_URL}/{account.id}", 
+            f"{BASE_URL}/{account.id}",
             content_type="application/json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["name"], account.name)
-    
+
     def test_get_account_not_found(self):
         """It should return a 404 response when the account is not found"""
         non_existent_account_id = 0
         response = self.client.get(
-            f"{BASE_URL}/{non_existent_account_id}", 
+            f"{BASE_URL}/{non_existent_account_id}",
             content_type="application/json"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -151,7 +153,7 @@ class TestAccountService(TestCase):
             BASE_URL, json=test_account.serialize()
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         new_account = response.get_json()
         new_account["name"] = "Andrey"
         response = self.client.put(
@@ -160,3 +162,12 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_account = response.get_json()
         self.assertEqual(updated_account["name"], "Andrey")
+
+    def test_get_account_list(self):
+        """It should Get a list of Accounts"""
+        self._create_accounts(5)
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+        
