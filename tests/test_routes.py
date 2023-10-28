@@ -191,10 +191,10 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         headers = {
             "X-Frame-Options": "SAMEORIGIN",
-            "X-XSS-Protection": "1; mode=block",
             "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'self'; object-src 'none'",
+            "Content-Security-Policy": "default-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "Referrer-Policy": "strict-origin-when-cross-origin",
+            # "X-XSS-Protection": "1; mode=block", due to its outdated status I changed it to CSP
         }
         for key, value in headers.items():
             self.assertEqual(response.headers.get(key), value)
