@@ -1,19 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: accounts-deployment
+  creationTimestamp: null
+  labels:
+    app: accounts
+  name: accounts
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: accounts
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: accounts
     spec:
       containers:
-        - name: accounts
-          image: IMAGE_NAME_HERE
-          ports:
-            - containerPort:5000
+      - image: IMAGE_NAME_HERE
+        name: accounts
+        resources: {}
+
+        env:
+          - name: DATABASE_HOST
+            value: postgresql
+          - name: DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-name
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-password
+          - name: DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-user
